@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "1",
+  "name": "@nuxt4-layers/theme-manager",
+  "version": "0.2.2",
+  "classification": "foundation",
+  "provides": [
+    {
+      "capability": "ThemeManagement",
+      "contractVersion": "1"
+    },
+    {
+      "capability": "SemanticPresentationTheme",
+      "contractVersion": "1"
+    }
+  ],
+  "requires": [],
+  "publicExports": [
+    ".",
+    "./contracts",
+    "./capability",
+    "./presentation.css"
+  ],
+  "integration": {
+    "consumers": "consume SemanticPresentationTheme contract; do not import Theme Manager internals",
+    "composition": "compose Theme Manager before presentation consumers; no reverse Theme Manager dependency"
+  }
+}
