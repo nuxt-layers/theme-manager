@@ -1,4 +1,4 @@
-import { readFileSync, existsSync } from 'node:fs'
+import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 
@@ -15,32 +15,12 @@ describe('TM-10 composition and legacy-retirement gate', () => {
     requires: unknown[]
     publicExports: string[]
   }
-  const retirement = read('docs/archive/migration/tm-10-composition-legacy-retirement.md')
-  const composition = read('docs/composition-contract.md')
+  const resources = read('RESOURCES.md')
+  const composition = read('docs/contract.md')
 
-  it('retains the complete TM-0 through TM-10 migration record', () => {
-    for (let stage = 0; stage <= 10; stage += 1) {
-      const entries = [
-        'tm-0-legacy-assets-architecture-audit.md',
-        'tm-1-legacy-theme-manager-functional-audit.md',
-        'tm-2-target-architecture-and-contracts.md',
-        'tm-3-new-repository-foundation.md',
-        'tm-4-presentation-engine-migration.md',
-        'tm-5-runtime-engine-migration.md',
-        'tm-6-persistence-theme-management.md',
-        'tm-7-theme-management-ui.md',
-        'tm-8-user-group-integration.md',
-        'tm-9-ui-layer-integration.md',
-        'tm-10-composition-legacy-retirement.md',
-      ]
-      expect(existsSync(resolve(root, 'docs/archive/migration', entries[stage]!))).toBe(true)
-    }
-  })
-
-  it('records immutable legacy evidence and forbids TM-10 mutation', () => {
-    expect(retirement).toContain('8847e6b1d8ebbca83f00d17b0cddb18522219c6e')
-    expect(retirement).toContain('No TM-10 write operation targets that repository')
-    expect(retirement).toContain('remains unchanged as immutable migration evidence')
+  it('records the TM-0 through TM-10 migration and its legacy evidence at immutable commits', () => {
+    expect(resources).toContain('nuxt-layers/theme-manager/tree/5efaef7b557278c160c663c31d1efd69f8e9d7a4/docs/archive/migration')
+    expect(resources).toContain('nuxt4-layers/legacy-theme-manager/tree/8847e6b1d8ebbca83f00d17b0cddb18522219c6e')
   })
 
   it('does not depend on legacy, UI, Authentication, Identity or Authorization packages', () => {
@@ -68,12 +48,7 @@ describe('TM-10 composition and legacy-retirement gate', () => {
     expect(composition).toContain('host Nuxt application is the composition root')
     expect(composition).toContain('pinned Git-backed dependency')
     expect(composition).toContain('lockfile records the exact resolved revision')
-    expect(composition).toContain('supplies a `ThemeRepository` adapter')
-    expect(composition).toContain('supplies `ThemeActorContextProvider` and `ThemeAuthorizationService`')
-  })
-
-  it('closes the migration programme without claiming downstream UI migration is complete', () => {
-    expect(retirement).toContain('Theme Manager migration programme TM-0 → TM-10 is complete')
-    expect(retirement).toContain('separate UI migration')
+    expect(composition).toContain('Supplies a `ThemeRepository` adapter')
+    expect(composition).toContain('Supplies `ThemeActorContextProvider` and `ThemeAuthorizationService`')
   })
 })

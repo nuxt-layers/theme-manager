@@ -1,10 +1,12 @@
 # Security Policy
 
-## Project status
+> **In short:** report a suspected vulnerability privately, never in a public issue; reports against the current release line are assessed and fixed case by case, with no promise of backports.
 
-Theme Manager remains in pre-1.0 development. **`v0.2.2` is the current canonical GitHub source release**, with the same public contract as `v0.2.1`. The `v0.2.0` GitHub Release was withdrawn, although its historical Git tag remains; it is not the current canonical release. Neither it nor the older `v0.1.0` tag establishes stable API compatibility or a general-availability support commitment.
+## Supported releases
 
-Security fixes are developed against the maintained development line. Security reports affecting `v0.2.2`, `v0.2.1` or the withdrawn `v0.2.0` revision are in scope for assessment and remediation; however, this policy does not promise automatic backports or maintenance releases for any particular version. The older `v0.1.0` tag is not the canonical supported baseline. Maintainers will determine affected versions, mitigations, and any backport or patch-release decisions case by case.
+Theme Manager is pre-1.0, and no release establishes stable API compatibility or a general-availability support commitment. The [changelog](CHANGELOG.md) lists the releases.
+
+Security fixes are developed on the maintained development line. Reports affecting any release in the current release line (the releases sharing its minor version, withdrawn ones included) are in scope for assessment and remediation. Earlier release lines are not supported baselines. This policy promises no automatic backports or maintenance releases: maintainers decide affected versions, mitigations, backports and patch releases case by case.
 
 ## Reporting a vulnerability
 
@@ -33,11 +35,11 @@ Security-sensitive Theme Manager surfaces include, but are not limited to:
 - semantic asset references and URL-like values;
 - Theme persistence boundaries;
 - management routes and server endpoints;
-- actor-context and authorization integration boundaries;
+- actor-context and authorisation integration boundaries;
 - package exports and composition behaviour; and
 - dependency, build and CI/CD supply-chain integrity.
 
-Authentication, authorization policy, physical asset storage and consuming-application security remain responsibilities of their owning capabilities or host application, but boundary failures in Theme Manager are in scope.
+Authentication, authorisation policy, physical asset storage and consuming-application security remain responsibilities of their owning capabilities or host application, but boundary failures in Theme Manager are in scope.
 
 ## Coordinated disclosure
 
@@ -47,4 +49,4 @@ Good-faith security research that avoids privacy violations, data destruction, s
 
 ## Security expectations for contributions
 
-Security fixes are subject to the same architecture, testing and review requirements as other changes. A security fix must not bypass public contracts or move Authentication, Identity or Authorization policy into Theme Manager merely to address an integration concern.
+Security fixes are subject to the same architecture, testing and review requirements as other changes. A security fix must not bypass public contracts or move Authentication, Identity or Authorisation policy into Theme Manager merely to address an integration concern.

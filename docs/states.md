@@ -1,14 +1,10 @@
-# Interactive State Design Colour Palette Guide
+# States
 
-Oct 5, 2026 · @Steve Lewis
+> **In short:** every interactive component uses one set of twelve states, styled through four channels (Fill, Pen, Edge and Shadow). This guide defines the states, how each looks, which wins when several apply, and how to build and review components against them.
 
-## Implementation status (current `master`)
+The runtime requires six of the states for each role it receives; [Presentation](presentation.md) explains which, and how to choose and pair tokens.
 
-This document records the extended twelve-state **design vocabulary**, not an assurance that every proposed runtime or mode-management behaviour is implemented. `shared/theme-runtime.ts` currently requires six base states (`default`, `hover`, `active`, `selected`, `visited`, `disabled`) for each provided role; other valid state keys may be supplied and applied. The bundled CSS contains additional design-state tokens. The layer currently stores the selected Theme identifier in `active-theme-id` and applies Theme variables in a client plugin. It does **not** implement the light/dark/system mode cookie, server-side dark-class plugin, or pre-paint system-mode script described below. Those are proposed design requirements, not integration guarantees. The host must provide mode-class management where needed.
-
-## Purpose and scope
-
-Every interactive component uses one shared set of twelve states, styled through four channels: Fill, Pen, Edge and Shadow. This guide defines those states, how each one looks, which wins when several apply, and the procedures for building and reviewing components against them.
+## Scope
 
 | Item | In scope | Out of scope |
 | --- | --- | --- |
@@ -78,42 +74,8 @@ The theme manager's engine (`createThemeApplication` in `shared/theme-runtime.ts
 
 | # | Rule |
 | --- | --- |
-| T1 | Every new token gets an `@RUNTIME` note in `theme-default.css` stating its status. |
-| T2 | Never set breakpoints from a stored theme: media queries keep the build-time values while `--ui-container-screen-*` would move. |
-| T3 | `theme-default.css` is the single source of the vocabulary. `theme-api.css` and `tailwind-config.css` are generated from it by `scripts/generate-theme-api.mjs`; the engine, `shared/canonical-theme.ts` and its tests are updated to match. |
-
-## Pipeline and mode handling
-
-Three locked CSS files carry every token from source to utility; a fourth, generated from the first, lets a scoped element preview a theme on its own.
-
-| Step | File | Holds | Edited by |
-| --- | --- | --- | --- |
-| 1 | `assets/css/theme/theme-default.css` | Source values `--ui-*`, with `-light` / `-dark` suffixes where modes differ, in one `:root` block | Locked |
-| 2 | `assets/css/theme/theme-api.css` | Stable `--api-*` names: light in `:root`, dark in `html.dark`, mode-free in a second `:root`; sets `color-scheme` | Locked (verified by the generator) |
-| 3 | `assets/css/tailwindcss/tailwind-config.css` | `@theme inline` mapping Tailwind namespaces to `--api-*`; literal breakpoints; plain `@keyframes` after the block | Locked (verified by the generator) |
-| 4 | `assets/css/theme/theme-scope.css` | The step 2 mappings again on `[data-theme-scope="light" \| "dark"]`, so a scoped element (the editor preview) resolves `--api-*` from its own `--ui-*` values, in its own mode | Generator |
-
-| # | Rule |
-| --- | --- |
-| P1 | Hand-written CSS reads `--api-*` only, never `--ui-*`: `--ui-*` values have not been through mode selection. |
-| P2 | Steps 1–3 are locked and finalised: `tests/presentation-lock.test.ts` holds their hashes, and `node scripts/generate-theme-api.mjs` verifies them on every run but never rewrites them. Changing one is a deliberate decision that updates the lock register in the same pull request. The generator writes step 4; `pnpm check` runs its `--check`. |
-| P3 | Token names are lowercase segments joined by single hyphens. Tailwind's partner properties (`--text-sm--line-height`, `--font-mono--font-feature-settings`) are written only in `tailwind-config.css`. |
-| P4 | `@keyframes` sit outside `@theme`: Tailwind drops theme keyframes it cannot see named in an `--animate-*` value, and ours are `var()` references. |
-| P5 | Tailwind's default theme, including its colour palette, stays available underneath (`main.css` imports `tailwindcss` first). Decided: the palette is kept. Components still use only the theme's tokens (principle P6). |
-
-### Light, dark and system
-
-Dark CSS mappings are selected when `<html>` has the `dark` class. **The mode-controller architecture in the following table is a design proposal, not current layer functionality.** The current layer does not own the class; a host must supply mode selection and any pre-paint synchronisation it requires.
-
-| Piece | Where | Does |
-| --- | --- | --- |
-| Mode cookie (proposed) | Proposed layer runtime, beside `active-theme-id` | Would store `light`, `dark` or `system` (default `system`); not currently implemented |
-| Server render (proposed) | Proposed layer server plugin | Would render `<html class="dark">` for `dark`, no class for `light`; not currently implemented |
-| Head script (proposed) | Proposed layer `app.head` | Would read `prefers-color-scheme` and update the class; not currently implemented |
-| `color-scheme` | `theme-api.css` | Browser controls (scrollbars, inputs, pickers) match the mode |
-| Editor preview | Theme editor | Toggles a scoped container, never `<html>` |
-
-With JavaScript disabled, `system` falls back to light; covering that would mean repeating the dark mappings under `prefers-color-scheme` (not done).
+| T1 | Never set breakpoints from a stored theme: media queries keep the build-time values while `--ui-container-screen-*` would move. |
+| T2 | `theme-default.css` is the single source of the vocabulary; [Presentation](presentation.md#how-the-stylesheet-is-built) describes how the rest of the stylesheet is derived from it. The engine, `shared/canonical-theme.ts` and its tests are updated to match. |
 
 ## Surface roles and layers
 
@@ -179,7 +141,7 @@ Every role defines all twelve states in the theme. This table shows which states
 
 ## Default palette: Calm Sky
 
-The default theme (`theme-default.css` v5.1.0) uses light blues, blue-greys and greens; only warning (amber) and error (red) keep conventional hues. The table gives each role's default state; other states are steps from these, and the theme file holds every value.
+The default theme uses light blues, blue-greys and greens; only warning (amber) and error (red) keep conventional hues. The table gives each role's default state; other states are steps from these, and the theme file holds every value.
 
 | Role | Light fill / pen / edge | Dark fill / pen / edge |
 | --- | --- | --- |

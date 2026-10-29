@@ -1,84 +1,55 @@
 # Contributing to Theme Manager
 
-Thank you for considering a contribution to Theme Manager.
+> **In short:** how to work on Theme Manager: read the contract first, keep changes small and inside the capability's boundaries, prove them with `pnpm check` and the Markdown check, and propose them through a pull request.
 
-Theme Manager is a Nuxt 4 Layer with deliberately narrow architectural boundaries. Contributions should improve the capability without transferring responsibilities from consuming applications or other platform capabilities into this repository.
+Theme Manager follows the ecosystem's AI-driven development method and architecture rules (see [Resources](RESOURCES.md)). Contributions improve the capability without moving responsibilities into it from hosts or other capabilities.
 
 ## Before contributing
 
-Start with:
-
-1. [README.md](README.md)
-2. [Public Contract](docs/contracts.md)
-3. [Composition Contract](docs/composition-contract.md)
-4. [Semantic Presentation Consumer Contract](docs/semantic-presentation-consumer-contract.md)
-5. [Semantic Presentation Guide](docs/semantic-presentation-guide.md)
-
-Historical TM-0 through TM-10 migration records are retained under `docs/archive/migration/` for provenance. They are not current public API authority.
-
-For a suspected security vulnerability, follow [SECURITY.md](SECURITY.md) instead of opening a public issue.
+Read, in order: the [README](README.md), [the contract](docs/contract.md) and [Presentation](docs/presentation.md). For a suspected vulnerability, follow [Security](SECURITY.md) instead of opening a public issue.
 
 ## Development environment
 
-The repository requires Node.js 22 or later and uses the pnpm version declared by `packageManager` in `package.json`.
-
-Install and verify with:
+Use the Node.js version in `engines` and the pnpm version in `packageManager`, both in `package.json`.
 
 ```sh
 pnpm install
 pnpm dev:prepare
 pnpm check
+python3 scripts/check_markdown.py
 ```
 
-`pnpm dev:prepare` generates the Nuxt types that `pnpm check` needs. `pnpm check` runs the repository typecheck and test suite and is the minimum local quality gate before submitting a pull request.
+`pnpm dev:prepare` generates the Nuxt types that `pnpm check` needs. `pnpm check` runs the type check, the tests and the stylesheet pipeline check, and is the minimum local gate before a pull request. The Markdown check enforces the documentation rules below.
 
-## Contribution workflow
+## Workflow
 
-Create a focused branch from current `master`. Keep each change narrowly scoped and avoid unrelated formatting, dependency or documentation churn.
+1. Branch from `master`; keep each change narrow, without unrelated formatting, dependency or documentation churn.
+2. Propose it through a pull request, never by changing `master` directly. Explain the problem, the intended behaviour, any architectural or compatibility effect, and how it was verified.
+3. Add or update tests when behaviour or a public contract changes, and update the documents when a contract, integration requirement or semantic rule changes.
+4. Merge only when every required CI check passes.
 
-Submit changes through a pull request rather than modifying `master` directly. The pull request should explain the problem, the intended behaviour, material architectural or compatibility effects, and how the change was verified.
+## Boundaries
 
-Keep commits reviewable. Add or update tests when behaviour or a public contract changes. Update current documentation when a user-visible contract, integration requirement or semantic rule changes.
+Theme Manager owns Theme meaning and the semantic presentation vocabulary. It does not own reusable application UI, Authentication, Identity, Authorisation policy, application routing, database technology or asset storage.
 
-All required CI checks must pass before merge.
-
-## Architectural boundaries
-
-Theme Manager owns Theme-domain semantics and the semantic presentation vocabulary. It does not own reusable application UI, Authentication, Identity, Authorization policy, application routing, database technology or physical asset storage.
-
-Contributions must preserve the dependency direction and public package surface defined by the repository contracts. Do not couple Theme Manager to a particular consuming UI implementation or private source topology.
-
-Persisted or imported Theme data is untrusted until validated. New external-input surfaces must fail safely and preserve the existing validation boundary.
+- Preserve the dependency direction and public package surface set by [the contract](docs/contract.md); never couple Theme Manager to a particular consuming UI or its source layout.
+- Treat stored or imported Theme data as untrusted until validated; new external inputs fail safely behind the existing validation boundary.
+- Treat documented exports and contracts as public. Breaking changes are recorded even before 1.0; undocumented paths stay private and never become accidental contracts.
+- Add a dependency only when the existing stack cannot reasonably do the job, and explain new runtime dependencies in the pull request. Never add a dependency on a UI, Authentication, Identity or Authorisation package where the host boundary is the intended design.
 
 ## Presentation changes
 
-Select presentation tokens by semantic meaning rather than by their current rendered colour.
+Choose tokens by meaning, never by their current colour, and review in the order [Presentation](docs/presentation.md#review-order) sets: meaning, palette, accessibility, composition. Never swap in an unrelated token just to pass a contrast check.
 
-Review presentation changes in this order:
+## Documentation
 
-1. semantic correctness;
-2. palette correctness;
-3. accessibility of the actual rendered relationship; and
-4. composed-system verification.
+Documents follow ADR-0010 and ADR-0004 (see [Resources](RESOURCES.md)):
 
-Do not substitute an unrelated semantic token solely to make a contrast calculation pass. See the [Semantic Presentation Guide](docs/semantic-presentation-guide.md).
+- every document opens with a one-line *In short*, in plain British English, and states each rule once;
+- `README.md`, `CONTRIBUTING.md`, `SECURITY.md` and `CODE_OF_CONDUCT.md` hold no versions, status, plans or external links;
+- versions and release status live in `CHANGELOG.md` and `CONTRACT.md`, plans in `PLAN.md`;
+- external links appear only in `RESOURCES.md`, pinned to a tag or commit; a removed document leaves no pointer file, only a pinned entry there.
 
-## Compatibility
+## Licence and conduct
 
-Treat documented package exports and contracts as public interfaces. Breaking changes require explicit compatibility/version treatment even while the project is pre-1.0.
-
-Undocumented internal paths are private implementation details and should not become accidental public contracts.
-
-## Dependencies
-
-Avoid adding dependencies unless they provide clear value that cannot reasonably be achieved within the existing stack. Explain new runtime dependencies in the pull request.
-
-Do not add dependencies on UI, Authentication, Identity or Authorization packages where the current provider/host boundary is the intended architecture.
-
-## Licence
-
-By submitting a contribution to this repository, you agree that your contribution is licensed under the repository's [MIT License](LICENSE).
-
-## Conduct
-
-Participation in this project is governed by the [Code of Conduct](CODE_OF_CONDUCT.md).
+By contributing you agree your contribution is licensed under the repository's [MIT Licence](LICENSE). Participation follows the [Code of Conduct](CODE_OF_CONDUCT.md).

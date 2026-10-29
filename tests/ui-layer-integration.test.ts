@@ -9,7 +9,7 @@ describe('TM-9 presentation-consumer boundary', () => {
   const pkg = JSON.parse(read('package.json')) as { exports: Record<string, string>; dependencies?: Record<string, string>; devDependencies?: Record<string, string> }
   const capability = JSON.parse(read('capability.json')) as { provides: Array<{ capability: string; contractVersion: string }>; requires: unknown[]; publicExports: string[] }
   const css = read('assets/css/main.css')
-  const contract = read('docs/semantic-presentation-consumer-contract.md')
+  const contract = read('docs/contract.md')
 
   it('publishes one deliberate semantic presentation stylesheet entry point', () => {
     expect(pkg.exports['./presentation.css']).toBe('./assets/css/main.css')
