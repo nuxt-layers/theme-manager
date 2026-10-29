@@ -1,15 +1,15 @@
 # Theme Manager Host Contract
 
-What a host needs to compose Theme Manager `v0.2.2`, and nothing else ([ADR-0012](https://github.com/nuxt4-layers/platform-architecture/blob/249cd48af72e0a3fc232d40c8aa05e8da3b32069/docs/decisions/ADR-0012-trivial-composition.md#6-a-one-page-host-contract) §6). The [README](README.md), the documents in [`docs/`](docs/) and the code stay the source: where this page disagrees with them, this page is the bug.
+> **In short:** what a host needs to compose Theme Manager `v0.2.2`, and nothing else (ADR-0012 §6, see [Resources](RESOURCES.md)). The [README](README.md), the documents in [`docs/`](docs/) and the code stay the source: where this page disagrees with them, this page is the bug.
 
-Theme Manager is the **only authority** for the effective theme and its token vocabulary ([ADR-0009](https://github.com/nuxt4-layers/platform-architecture/blob/249cd48af72e0a3fc232d40c8aa05e8da3b32069/docs/decisions/ADR-0009-headless-capability-layers.md#theme-manager)). Other layers' screens, `ui` and the host consume that vocabulary; none of them defines, validates or applies a theme of its own.
+Theme Manager is the **only authority** for the effective theme and its token vocabulary (ADR-0009). Other layers' screens, `ui` and the host consume that vocabulary; none of them defines, validates or applies a theme of its own.
 
 `v0.2.2` does not meet ADR-0012 yet: it ships no PostgreSQL store, no caller or access defaults and no `examples/minimal-host`. Today each host writes a theme store (`ThemeRepository`) and a policy (an actor-context provider and an authorisation service), as below.
 
 ## Install
 
 ```json
-"@nuxt4-layers/theme-manager": "github:nuxt4-layers/theme-manager#v0.2.2"
+"@nuxt4-layers/theme-manager": "github:nuxt-layers/theme-manager#v0.2.2"
 ```
 
 `extends: ['@nuxt4-layers/theme-manager']` in `nuxt.config.ts`; install with `--frozen-lockfile` and check the resolved commit in the lockfile. Node.js 22 or later. The package is `private: true` (no npm release) and runs no install scripts, so it needs no `allowBuilds` entry. One Nitro plugin (the three `provide*` functions are auto-imported from the layer; types come from `@nuxt4-layers/theme-manager/contracts`):
