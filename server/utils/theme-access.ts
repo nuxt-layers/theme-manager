@@ -6,6 +6,7 @@ import type {
   ThemeDefinition,
   ThemeResourceRef,
 } from '../../contracts'
+import { isThemeTestMode, TEST_THEME_ACTOR_ID } from './theme-test-mode'
 
 export class ThemeAuthorizationError extends Error {
   constructor(public readonly action: ThemeAction, public readonly resourceId: string) {
@@ -35,6 +36,10 @@ export function clearThemeAccessIntegration(): void {
 }
 
 export function useThemeAccessIntegration(): ThemeAccessIntegration {
+  if (isThemeTestMode()) {
+    const actor: ThemeActorContext = { actorId: TEST_THEME_ACTOR_ID, groupIds: [], organisationIds: [] }
+    return { actor: async () => actor, async assert() { return actor } }
+  }
   if (!actorProvider || !authorizationService) {
     throw new Error('Theme Identity/Authorization integration has not been configured by the composition root.')
   }
