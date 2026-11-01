@@ -34,13 +34,15 @@
     "typescript": "^5.9.3",
     "vitest": "^5.0.5",
     "vue": "3.5.44",
-    "vue-tsc": "^3.3.14",
-    "@tailwindcss/vite": "^4.3.3",
-    "tailwindcss": "^4.3.3"
+    "vue-tsc": "^3.3.14"
   },
   "packageManager": "pnpm@12.16.1",
   "engines": {
     "node": ">=22"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "tailwindcss": "^4.3.3"
+  }
 }
