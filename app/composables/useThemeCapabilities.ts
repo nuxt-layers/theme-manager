@@ -1,6 +1,7 @@
 export interface ThemeCapabilities {
   /** The host composed Theme storage: Themes can be listed, created, edited and saved. */
   storage: boolean
+  testMode?: boolean
 }
 
 /**
@@ -13,5 +14,5 @@ export async function useThemeCapabilities() {
     key: 'theme-manager:capabilities',
     default: () => ({ storage: false }),
   })
-  return { storage: computed(() => data.value?.storage === true) }
+  return { storage: computed(() => data.value?.storage === true), testMode: computed(() => data.value?.testMode === true) }
 }
