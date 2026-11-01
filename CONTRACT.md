@@ -1,18 +1,18 @@
 # Theme Manager Host Contract
 
-> **In short:** what a host needs to compose Theme Manager `v0.2.2`, and nothing else (ADR-0012 §6, see [Resources](RESOURCES.md)). The [README](README.md), the documents in [`docs/`](docs/) and the code stay the source: where this page disagrees with them, this page is the bug.
+> **In short:** the public integration surface of the current development `master`. This contract is intended to be self-contained (ADR-0012 §6); accepted architecture governs discrepancies, and implementation is evidence of actual behaviour.
 
 Theme Manager is the **only authority** for the effective theme and its token vocabulary (ADR-0009). Other layers' screens, `ui` and the host consume that vocabulary; none of them defines, validates or applies a theme of its own.
 
-`v0.2.2` does not meet ADR-0012 yet: it ships no PostgreSQL store, no caller or access defaults and no `examples/minimal-host`. Today each host writes a theme store (`ThemeRepository`) and a policy (an actor-context provider and an authorisation service), as below.
+**Current integration blocker:** the implementation does not yet meet ADR-0012: it ships no PostgreSQL store, no standard `resolveCaller`/`decide` composition, and no `examples/minimal-host`. The existing repository and access providers are implemented in internal server utilities, not in the package's declared public exports. A complete, architecture-compliant host integration cannot presently be specified without relying on private implementation. Do not treat those internal providers as an accepted public composition interface.
 
 ## Install
 
 ```json
-"@nuxt4-layers/theme-manager": "github:nuxt-layers/theme-manager#v0.2.2"
+"@nuxt4-layers/theme-manager": "github:nuxt-layers/theme-manager#master"
 ```
 
-`extends: ['@nuxt4-layers/theme-manager']` in `nuxt.config.ts`; install with `--frozen-lockfile` and check the resolved commit in the lockfile. Node.js 22 or later. The package is `private: true` (no npm release) and runs no install scripts, so it needs no `allowBuilds` entry. One Nitro plugin (the three `provide*` functions are auto-imported from the layer; types come from `@nuxt4-layers/theme-manager/contracts`):
+`extends: ['@nuxt4-layers/theme-manager']` in `nuxt.config.ts`; refresh the lockfile whenever accepted upstream `master` advances, then use `--frozen-lockfile` in CI. The package scope is still `@nuxt4-layers` in the current implementation; this is not the repository organisation name. Node.js 22 or later. The package is `private: true` (no npm release) and runs no install scripts, so it needs no `allowBuilds` entry. **Existing implementation only — not an approved public integration recipe:** the three `provide*` functions below live under `server/utils/` and are not exported by the declared package export map. Nuxt may auto-import them in a composed application, but this does not satisfy the public-interface requirement. This example documents the current gap; a consuming application must not depend on these private paths or an undocumented auto-import contract:
 
 ```ts
 import type { ThemeActorContextProvider, ThemeAuthorizationService, ThemeRepository } from '@nuxt4-layers/theme-manager/contracts'
@@ -66,7 +66,7 @@ Errors are Nitro errors with a status: `400` invalid theme or body, `403` not au
 
 ## Permissions
 
-Theme Manager asks the host's `isAllowed` about these actions. `v0.2.2` declares no risk level for them; the host's policy sets it. Self-service themes are usually low risk, while `theme.share` to `organisation` or `public` and `theme.publish` deserve an administrator.
+Theme Manager asks the host's `isAllowed` about these actions. The current implementation declares no risk level for them; the host's policy sets it. Self-service themes are usually low risk, while `theme.share` to `organisation` or `public` and `theme.publish` deserve an administrator.
 
 | Action | Asked when | Effect |
 |---|---|---|
@@ -76,7 +76,7 @@ Theme Manager asks the host's `isAllowed` about these actions. `v0.2.2` declares
 | `theme.delete` | `DELETE` | |
 | `theme.publish` | Creating a `published` theme, or moving one to `published` | |
 | `theme.share` | Creating a theme whose visibility is not `private`, or changing visibility | |
-| `theme.use`, `theme.assign`, `theme.import`, `theme.export` | Declared, not asked by `v0.2.2` | Selecting a theme is only the cookie and `theme.read`; there is no assignment, import or export endpoint |
+| `theme.use`, `theme.assign`, `theme.import`, `theme.export` | Declared, not asked by The current implementation | Selecting a theme is only the cookie and `theme.read`; there is no assignment, import or export endpoint |
 
 ## Screens
 
@@ -122,8 +122,8 @@ A screen the host or another layer draws itself must still:
 - System themes (the default and any `ownerType` or `visibility` of `system`) ship with a release and are never created, edited or deleted: `403`.
 - Creating needs `theme.create` **and** the actor to own the theme (`actorId`, a `groupIds` or an `organisationIds` entry equal to `ownerId`). `v0.2.2` takes the owner from the three creation settings, so every new theme has the same owner.
 - `getActorContext()` takes no argument: the provider reads the current request itself, for example through Nitro's `useEvent()` with `nitro.experimental.asyncContext`.
-- Saving stamps vocabulary version `2`; older stored themes are completed from the default on read. `v0.1.0` refuses themes saved by `v0.2.x`: back up before upgrading.
+- Saving stamps vocabulary version `2`; older stored themes are completed from the default on read. Older development builds may refuse themes written with a newer vocabulary; preserve backups before updating.
 - Without a store the HTTP operations answer `503`; there is no in-memory or file fallback. Without the policy they fail closed.
 - Rendering never depends on a store round trip: the default theme is always available.
 
-See the [Changelog](CHANGELOG.md) for release history.
+Development integration follows current accepted `master`, not historical release tags.
