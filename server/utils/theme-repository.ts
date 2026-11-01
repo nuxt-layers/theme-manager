@@ -1,4 +1,5 @@
 import type { ThemeRepository } from '../../contracts'
+import { isThemeTestMode, themeTestRepository } from './theme-test-mode'
 
 export interface ThemeRepositoryProvider {
   getThemeRepository(): ThemeRepository
@@ -26,10 +27,11 @@ export class ThemeStorageUnavailableError extends Error {
  * the built-in default Theme applies and nothing can be created, edited or saved.
  */
 export function hasThemeRepository(): boolean {
-  return provider !== null
+  return isThemeTestMode() || provider !== null
 }
 
 export function useThemeRepository(): ThemeRepository {
+  if (isThemeTestMode()) return themeTestRepository
   if (!provider) throw new ThemeStorageUnavailableError()
   return provider.getThemeRepository()
 }
