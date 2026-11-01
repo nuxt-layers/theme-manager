@@ -15,6 +15,6 @@ Architecture reference commit: `d65e1055cb48eed3f52f85611c931b767da311ec`.
 | ADR-0009 | Headless presentation and Theme Manager authority | [ADR-0009](https://github.com/nuxt-layers/architecture-rules/blob/d65e1055cb48eed3f52f85611c931b767da311ec/docs/decisions/ADR-0009-headless-capability-layers.md) |
 | ADR-0010 | Documentation style and source of truth | [ADR-0010](https://github.com/nuxt-layers/architecture-rules/blob/d65e1055cb48eed3f52f85611c931b767da311ec/docs/decisions/ADR-0010-documentation-style.md) |
 | ADR-0012 | Host composition budget and standalone contract | [ADR-0012](https://github.com/nuxt-layers/architecture-rules/blob/d65e1055cb48eed3f52f85611c931b767da311ec/docs/decisions/ADR-0012-trivial-composition.md) |
-| ADR-0013 | Development toolchain policy | [ADR-0013](https://github.com/nuxt-layers/architecture-rules/blob/d65e1055cb48eed3f52f85611c931b767da311ec/docs/decisions/ADR-0013-development-toolchain.md) |
+| ADR-0013 | Development toolchain policy | [ADR-0013](https://github.com/nuxt-layers/architecture-rules/blob/d65e1055cb48eed3f52f85611c931b767da311ec/docs/decisions/ADR-0013-development-toolchain-baseline.md) |
 
 Development software dependencies follow the latest accepted upstream `master` under ADR-0008; the reference commit here records only the architectural documents reviewed, not a software dependency pin.
