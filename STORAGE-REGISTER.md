@@ -4,9 +4,9 @@
 
 ## Browser storage
 
-| Key | Mechanism and owner | Purpose and data | Lifetime and scope | Security and consent-relevant facts |
-| --- | --- | --- | --- | --- |
-| `active-theme-id` | First-party cookie, Theme Manager (`app/composables/useThemeRuntime.ts`) | Stores the selected theme's opaque identifier, not the full theme or user identity; allows selected theme restoration | `maxAge: 31536000` seconds (365 days); `path: /`; domain not explicitly set (host-only by default) | `SameSite=Lax`; `Secure` and `HttpOnly` not explicitly configured. Client JavaScript reads/writes the cookie. Functional preference; whether consent is required depends on jurisdiction and exemption conditions, to be determined by the host |
+| Key | Mechanism and owner | Purpose and data | Essential for core operation? | Lifetime and scope | Security and consent-relevant facts |
+| --- | --- | --- | --- | --- | --- |
+| `active-theme-id` | First-party cookie, Theme Manager (`app/composables/useThemeRuntime.ts`) | Stores the selected theme's opaque identifier, not the full theme or user identity; allows selected theme restoration | **No.** The bundled default theme works without it; disabling persistence loses the selected-theme preference between visits. Current code writes it on activation; preventing its use may require an implementation change | `maxAge: 31536000` seconds (365 days); `path: /`; domain not explicitly set (host-only by default) | `SameSite=Lax`; `Secure` and `HttpOnly` not explicitly configured. Client JavaScript reads/writes the cookie. Functional preference; whether consent is required depends on jurisdiction and exemption conditions, to be determined by the host |
 
 No other persistent browser-storage key was identified in the inspected Theme Manager runtime/editor code. Nuxt `useState` keeps effective, preview and error state in application memory; it is not a separate durable browser store. The host or framework may create other cookies, which are not Theme Manager-owned and must be inventoried by their actual owners.
 
