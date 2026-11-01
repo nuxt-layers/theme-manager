@@ -6,7 +6,7 @@
 | --- | --- | --- |
 | Trivial composition | Open | Meet ADR-0012 (see [Resources](RESOURCES.md)): a bundled PostgreSQL store, caller and access defaults, and `examples/minimal-host`, so a host no longer writes its own store and policy ([host contract](CONTRACT.md)) |
 | Mode controller | Proposed | A layer-owned light, dark and system mode, described below |
-| Browser storage register | Open | Inventory every cookie and browser-storage mechanism owned by Theme Manager: name, purpose, data, classification, mechanism, duration, scope, security attributes and jurisdiction-dependent consent assessment. Keep the inventory aligned with implementation and expose the relevant facts in `CONTRACT.md`; consent policy belongs to the consuming application. No code change in the documentation audit |
+| Storage register | In review | Inventory actual storage in [Storage Register](STORAGE-REGISTER.md), identify gaps and keep it aligned with implementation; the proposed mode cookie must not be listed as implemented |
 
 ## Mode controller (proposed)
 
