@@ -12,20 +12,7 @@ Theme Manager is the **only authority** for the effective theme and its token vo
 "@nuxt4-layers/theme-manager": "github:nuxt-layers/theme-manager#master"
 ```
 
-`extends: ['@nuxt4-layers/theme-manager']` in `nuxt.config.ts`; refresh the lockfile whenever accepted upstream `master` advances, then use `--frozen-lockfile` in CI. The package scope is still `@nuxt4-layers` in the current implementation; this is not the repository organisation name. Node.js 22 or later. The package is `private: true` (no npm release) and runs no install scripts, so it needs no `allowBuilds` entry. **Existing implementation only — not an approved public integration recipe:** the three `provide*` functions below live under `server/utils/` and are not exported by the declared package export map. Nuxt may auto-import them in a composed application, but this does not satisfy the public-interface requirement. This example documents the current gap; a consuming application must not depend on these private paths or an undocumented auto-import contract:
-
-```ts
-import type { ThemeActorContextProvider, ThemeAuthorizationService, ThemeRepository } from '@nuxt4-layers/theme-manager/contracts'
-
-export default defineNitroPlugin(() => {
-  const repository: ThemeRepository = createHostThemeRepository(pool) // the host's store, below
-  provideThemeRepository({ getThemeRepository: () => repository })
-  provideThemeActorContext(hostThemeActorContext)                      // ThemeActorContextProvider
-  provideThemeAuthorization(hostThemePolicy)                           // ThemeAuthorizationService
-})
-```
-
-Without any of the three the default theme still applies; see *Host passes* for what stops working.
+`extends: ['@nuxt4-layers/theme-manager']` in `nuxt.config.ts`; refresh the lockfile whenever accepted upstream `master` advances, then use `--frozen-lockfile` in CI. The package scope is still `@nuxt4-layers` in the current implementation; this is not the repository organisation name. Node.js 22 or later. The package is `private: true` (no npm release) and runs no install scripts, so it needs no `allowBuilds` entry. **Composition is currently blocked:** no supported, public, single-call host integration exists. The implemented `provideThemeRepository`, `provideThemeActorContext` and `provideThemeAuthorization` are internal server utilities, not package exports. Do not import, auto-import or depend on them from a consuming application. The documented ports below describe present implementation behaviour, not an approved host integration API. The bundled default theme still renders without those integrations; stored-theme management does not.
 
 ## Settings
 
@@ -61,7 +48,8 @@ Without the actor provider and the authorisation service every `/api/themes*` ca
 | `GET /api/theme-manager/capabilities` | `{ storage: boolean }`; screens offer only what can work |
 | `GET /api/themes` | The `ThemeSummary[]` the caller may `theme.read`; others are left out |
 | `GET /api/themes/:id` | The theme, or `404` when missing **or** not readable |
-| `POST /api/themes`, `PUT /api/themes/:id`, `DELETE /api/themes/:id` | Canonical theme JSON, at most 256 KiB. `{ success, id }` on create |
+| `POST /api/themes`, `PUT /api/themes/:id` | Canonical theme JSON request body, at most 256 KiB; success response `{ success: true, id: string }` |
+| `DELETE /api/themes/:id` | No request body; success response `{ success: true, id: string }` |
 | `/contracts` | `parseThemeDefinition`, `parsePersistedTheme`, `serializeThemeDefinition`, `summarizeTheme`, `themeDefinitionToRuntime`, `createThemeApplication`, the types above, `THEME_MODES` |
 
 Errors are Nitro errors with a status: `400` invalid theme or body, `403` not authorised or a system theme, `404` not found or not readable, `409` the id exists, `413` body over 256 KiB, `503` no store, `500` anything else, including missing actor or authorisation providers.
@@ -78,7 +66,7 @@ Theme Manager asks the host's `isAllowed` about these actions. The current imple
 | `theme.delete` | `DELETE` | |
 | `theme.publish` | Creating a `published` theme, or moving one to `published` | |
 | `theme.share` | Creating a theme whose visibility is not `private`, or changing visibility | |
-| `theme.use`, `theme.assign`, `theme.import`, `theme.export` | Declared, not asked by The current implementation | Selecting a theme is only the cookie and `theme.read`; there is no assignment, import or export endpoint |
+| `theme.use`, `theme.assign`, `theme.import`, `theme.export` | Declared, not asked by the current implementation | Selecting a theme is only the cookie and `theme.read`; there is no assignment, import or export endpoint |
 
 ## Screens
 
@@ -89,7 +77,7 @@ Theme Manager's own management screens, drawn with its vocabulary:
 | `/theme-manager` | Theme library: list, *Use*, *Create*, *Edit*, *Delete* (system themes: *Use* only) |
 | `/theme-manager/:id`, `/theme-manager/new` | Editor: draft with light and dark preview, contrast badges, optional *Apply to the whole app while editing*; nothing is stored until *Save* |
 
-`v0.2.2` has no message catalogue (wording is built in, en-GB) and no `presentation: false`, page-path or page-switch setting. The host decides exposure: guard the routes with its own route middleware, or remove them in its `pages:extend` hook. The HTTP operations stay protected by the policy either way.
+The current implementation has no message catalogue (wording is built in, en-GB) and no `presentation: false`, page-path or page-switch setting. The host decides exposure: guard the routes with its own route middleware, or remove them in its `pages:extend` hook. The HTTP operations stay protected by the policy either way.
 
 **Vocabulary for every layer's screens** (`SemanticPresentationTheme` v1): classes of the form `<utility>-<family>-<role>-<state>`, chosen by meaning, never by the colour they show today.
 
@@ -98,13 +86,13 @@ Theme Manager's own management screens, drawn with its vocabulary:
 - States: required `default`, `hover`, `active`, `selected`, `visited`, `disabled`; also `focus`, `pressed`, `on`, `error`, `loading`, `shadow`.
 - Fill, Pen and Edge of one surface share a role and state; a cross-role pairing is deliberate, never a fix for contrast. Mode is resolved by Theme Manager and never named in a class.
 
-**`presentation.css`**: `@nuxt4-layers/theme-manager/presentation.css` is the public stylesheet (default theme, semantic API, Tailwind vocabulary), with light values on `:root` and dark on `html.dark`. The layer already adds it to Nuxt's `css`, together with its own pages as Tailwind sources. A host that builds its own Tailwind entry imports `presentation.css` there before other layers' stylesheets, once; it never imports `assets/css/layer.css`, `theme-default.css`, `theme-api.css` or any other path.
+**`presentation.css`**: `@nuxt4-layers/theme-manager/presentation.css` is the public stylesheet (default theme, semantic API, Tailwind vocabulary), with light values on `:root` and dark on `html.dark`. The layer already adds it to Nuxt's `css`, together with its own pages as Tailwind sources. A host that builds its own Tailwind entry can import `presentation.css` there before other layers' stylesheets, once; it never imports `assets/css/layer.css`, `theme-default.css`, `theme-api.css` or any other path.
 
-**Contrast (WCAG 2.2 AA, light and dark)**: Pen on its own Fill at least 4.5:1 (3:1 for large text), meaningful Edges 3:1, the focus ring 3:1 against every page layer, in every state but `disabled`. The default theme is held to this by Theme Manager's tests, and the editor shows a badge for every pairing in both modes. `v0.2.2` does **not** refuse to save a theme that fails a pairing: the host reviews themes before publishing or sharing them.
+**Contrast (WCAG 2.2 AA, light and dark)**: Pen on its own Fill at least 4.5:1 (3:1 for large text), meaningful Edges 3:1, the focus ring 3:1 against every page layer, in every state but `disabled`. The default theme is held to this by Theme Manager's tests, and the editor shows a badge for every pairing in both modes. The current implementation does **not** refuse to save a theme that fails a pairing: the host reviews themes before publishing or sharing them.
 
 **Theme visibility**: each theme has `ownership` (`system`, `user`, `group`, `organisation`, with an opaque `ownerId`), `visibility` (`private`, `group`, `organisation`, `shared`, `public`, `system`) and `lifecycle` (`draft`, `published`, `archived`). Theme Manager passes them to the policy; the host's `isAllowed` decides what each means. For a public seasonal theme, store it `published` with visibility `public`, and let the policy allow `theme.read` to every actor, `actorId: null` included; when the season ends, archive it and let the policy refuse reading archived themes, so readers fall back to the default.
 
-**Effective theme and preferences**: the effective theme is, in order, the editor's whole-app preview, then the selected theme (the `active-theme-id` cookie, loaded through `GET /api/themes/:id`, validated and applied as `--ui-*` values by Theme Manager's client plugin), then the bundled default `theme-manager-default`. Any failure to load, validate or apply clears the selection and shows the default. The selection is per browser; a person's preferred theme across devices is the host's to store, and it hands the id to Theme Manager by setting the cookie. `v0.2.2` has no site-wide default other than the bundled one: to show a seasonal theme to every visitor without a selection, the host sets the cookie itself. Light, dark or system mode is the host's: it sets `html.dark` and handles first paint.
+**Effective theme and preferences**: the effective theme is, in order, the editor's whole-app preview, then the selected theme (the `active-theme-id` cookie, loaded through `GET /api/themes/:id`, validated and applied as `--ui-*` values by Theme Manager's client plugin), then the bundled default `theme-manager-default`. Any failure to load, validate or apply clears the selection and shows the default. The selection is per browser; a person's preferred theme across devices is the host's to store, and it hands the id to Theme Manager by setting the cookie. The current implementation has no site-wide default other than the bundled one: to show a seasonal theme to every visitor without a selection, the host sets the cookie itself. Light, dark or system mode is the host's: it sets `html.dark` and handles first paint.
 
 ## Headless surface
 
@@ -122,7 +110,7 @@ A screen the host or another layer draws itself must still:
 
 - Theme ids are `^[a-z0-9-]{1,64}$`; the editor makes `theme-<uuid>`. `ownerId` is opaque, at most 256 characters, and required unless the owner is `system`.
 - System themes (the default and any `ownerType` or `visibility` of `system`) ship with a release and are never created, edited or deleted: `403`.
-- Creating needs `theme.create` **and** the actor to own the theme (`actorId`, a `groupIds` or an `organisationIds` entry equal to `ownerId`). `v0.2.2` takes the owner from the three creation settings, so every new theme has the same owner.
+- Creating needs `theme.create` **and** the actor to own the theme (`actorId`, a `groupIds` or an `organisationIds` entry equal to `ownerId`). The current implementation takes the owner from the three creation settings, so every new theme has the same owner.
 - `getActorContext()` takes no argument: the provider reads the current request itself, for example through Nitro's `useEvent()` with `nitro.experimental.asyncContext`.
 - Saving stamps vocabulary version `2`; older stored themes are completed from the default on read. Older development builds may refuse themes written with a newer vocabulary; preserve backups before updating.
 - Without a store the HTTP operations answer `503`; there is no in-memory or file fallback. Without the policy they fail closed.
