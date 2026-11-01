@@ -23,7 +23,7 @@ It does **not** own reusable application components, authentication, authorisati
 
 ## Using it
 
-The package is `@nuxt4-layers/theme-manager`. A host pins a release tag or commit, composes it with Nuxt `extends` and supplies what the [host contract](CONTRACT.md) asks; that page is all a host needs. The full contract, including the four public entry points, is in [the contract](docs/contract.md). Every other path is private.
+The package is `@nuxt4-layers/theme-manager`. During active development, a host follows the latest accepted `master`, composes the package with Nuxt `extends` and supplies what the [host contract](CONTRACT.md) asks; that page is all a host needs. The four declared package entry points and current integration blockers are recorded in the root [host contract](CONTRACT.md). Every other package path is private.
 
 Installing the layer runs no install scripts, so a host needs no `allowBuilds` entry for it.
 
@@ -56,14 +56,15 @@ A bundled default Theme is always available. The selected Theme is restored from
 | Document | Covers |
 | --- | --- |
 | [Host contract](CONTRACT.md) | The one page a host needs to compose Theme Manager |
-| [Contract](docs/contract.md) | Public entry points, capabilities, composition responsibilities, dependency direction and compatibility |
+| [Contract background](docs/contract.md) | Detailed historical/background interface notes; the root host contract is authoritative |
 | [Presentation](docs/presentation.md) | Choosing and pairing tokens, accessibility review order and how the stylesheet is built |
 | [States](docs/states.md) | The twelve interactive states, roles, palette and component procedures |
 | [Persistence](docs/persistence.md) | Writing and registering a `ThemeRepository` adapter |
 | [Theme Editor](docs/theme-editor.md) | What each editor tab edits, the preview, unsaved changes and accessibility |
 | [Changelog](CHANGELOG.md) | Releases |
+| [Storage register](STORAGE-REGISTER.md) | Actual stored data, cookie purpose, essentiality, lifetime and controls |
 | [Plan](PLAN.md) | Planned and proposed work |
-| [Resources](RESOURCES.md) | The external documents relied on, including the architecture rules, and earlier versions of removed documents |
+| [Resources](RESOURCES.md) | Verified architectural references |
 
 ## Development
 

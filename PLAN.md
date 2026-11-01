@@ -6,7 +6,7 @@
 | --- | --- | --- |
 | Trivial composition | Open | Meet ADR-0012 (see [Resources](RESOURCES.md)): a bundled PostgreSQL store, caller and access defaults, and `examples/minimal-host`, so a host no longer writes its own store and policy ([host contract](CONTRACT.md)) |
 | Mode controller | Proposed | A layer-owned light, dark and system mode, described below |
-| Storage register | In review | Inventory actual storage in [Storage Register](STORAGE-REGISTER.md), identify gaps and keep it aligned with implementation; the proposed mode cookie must not be listed as implemented |
+| Storage register | Implemented; maintain | Keep the [Storage Register](STORAGE-REGISTER.md) aligned with implementation; record proposed mode storage only when implemented |
 
 ## Mode controller (proposed)
 
