@@ -8,6 +8,7 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   css: [layerCss],
   runtimeConfig: {
+    themeManager: { mode: 'iam' },
     public: {
       themeManager: {
         creationTemplateId: '',
