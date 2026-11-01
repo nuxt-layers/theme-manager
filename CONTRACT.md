@@ -16,6 +16,9 @@ Theme Manager is the **only authority** for the effective theme and its token vo
 
 ## Settings
 
+**Development test mode:** a local consumer can set server-only `runtimeConfig.themeManager.mode = 'test'` to enable the existing management screens and HTTP endpoints with an in-process test store, a seeded editable template (`theme-test-template`) and an unrestricted test actor (`theme-test-admin`). No IAM layer or database is required. The store resets when the server process restarts. This mode is rejected when `NODE_ENV=production`; do not expose its unauthenticated APIs on a public development server. The mode defaults to `iam`, retaining existing provider-based integration. This mode is a development fixture, not the final standalone-production integration.
+
+
 | Setting | Default | Does |
 |---|---|---|
 | `themeManager.creationTemplateId` (`NUXT_PUBLIC_THEME_MANAGER_CREATION_TEMPLATE_ID`) | `''` | Id of a stored theme, readable by the creator, that *Create* copies. Unset, the editor refuses to create |

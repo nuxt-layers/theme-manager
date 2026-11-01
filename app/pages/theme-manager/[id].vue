@@ -29,7 +29,7 @@ import { assertCompleteThemeVocabulary, completeThemeVocabulary } from '../../..
 
 const route = useRoute()
 const management = useThemeManagement()
-const { storage } = await useThemeCapabilities()
+const { storage, testMode } = await useThemeCapabilities()
 const id = computed(() => String(route.params.id))
 const isNew = computed(() => id.value === 'new')
 const pending = ref(true)
@@ -48,11 +48,14 @@ async function newTheme(): Promise<ThemeDefinition> {
     creationOwnerId?: string
   } | undefined
 
-  if (!config?.creationTemplateId || !config.creationOwnerType || !config.creationOwnerId) {
+  const templateId = config?.creationTemplateId || (testMode.value ? 'theme-test-template' : '')
+  const ownerType = config?.creationOwnerType || (testMode.value ? 'user' : undefined)
+  const ownerId = config?.creationOwnerId || (testMode.value ? 'theme-test-admin' : '')
+  if (!templateId || !ownerType || !ownerId) {
     throw new Error('Theme creation requires composition-supplied template and owner context.')
   }
 
-  const template = completeThemeVocabulary(structuredClone(await management.loadTheme(config.creationTemplateId)))
+  const template = completeThemeVocabulary(structuredClone(await management.loadTheme(templateId)))
   const now = new Date().toISOString()
   return {
     ...template,
@@ -61,7 +64,7 @@ async function newTheme(): Promise<ThemeDefinition> {
     version: '1.0.0',
     created: now,
     updated: now,
-    ownership: { ownerType: config.creationOwnerType, ownerId: config.creationOwnerId },
+    ownership: { ownerType, ownerId },
     visibility: 'private',
     lifecycle: 'draft',
   }
