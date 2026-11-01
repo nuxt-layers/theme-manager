@@ -38,6 +38,8 @@ Without any of the three the default theme still applies; see *Host passes* for 
 
 All three settings are under `runtimeConfig.public`. There are no secrets.
 
+**Storage and consent:** The selection cookie is **not essential to core rendering**: without it, the bundled default theme remains available, but the browser does not remember the selected theme. The current implementation writes the cookie on activation, so disabling it may require an implementation correction. Theme Manager writes the client-readable first-party `active-theme-id` cookie containing a selected theme identifier, with 365-day maximum age, `path=/` and `SameSite=Lax`; it does not explicitly set `Secure` or `HttpOnly`. Activation sets it and fallback/default selection clears it. The host must assess applicable consent or exemption rules before enabling persistent preferences, and supply required notice/consent controls. Stored theme JSON currently uses a host-supplied `ThemeRepository` without a built-in retention or erasure policy; the host must assess personal-data classification, access isolation and deletion obligations. No other Theme Manager-owned durable browser storage has been identified in the inspected code. The detailed factual inventory is maintained in `STORAGE-REGISTER.md`; all host obligations needed for integration are stated here.
+
 ## Host passes
 
 | Need | Shared shape (ADR-0012 §2) | Today |
