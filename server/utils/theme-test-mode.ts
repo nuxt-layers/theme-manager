@@ -3,6 +3,8 @@ import { createCanonicalThemeDefinition } from '../../shared/canonical-theme'
 import { parsePersistedTheme, serializeThemeDefinition } from '../../shared/theme-definition'
 
 export function isThemeTestMode(): boolean {
+  // Unit tests import the repository outside Nuxt; no runtime config exists there.
+  if (typeof useRuntimeConfig !== 'function') return false
   const mode = useRuntimeConfig().themeManager?.mode
   if (mode !== 'test') return false
   if (process.env.NODE_ENV === 'production') throw new Error('Theme Manager test mode is forbidden in production.')

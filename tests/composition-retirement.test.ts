@@ -18,9 +18,10 @@ describe('TM-10 composition and legacy-retirement gate', () => {
   const resources = read('RESOURCES.md')
   const composition = read('docs/contract.md')
 
-  it('records the TM-0 through TM-10 migration and its legacy evidence at immutable commits', () => {
-    expect(resources).toContain('nuxt-layers/theme-manager/tree/5efaef7b557278c160c663c31d1efd69f8e9d7a4/docs/archive/migration')
-    expect(resources).toContain('nuxt4-layers/legacy-theme-manager/tree/8847e6b1d8ebbca83f00d17b0cddb18522219c6e')
+  it('references accepted architectural documents at verified revisions', () => {
+    expect(resources).toContain('nuxt-layers/architecture-rules/blob/')
+    expect(resources).toContain('docs/decisions/ADR-0012-trivial-composition.md')
+    expect(resources).toContain('docs/decisions/ADR-0008-independent-layer-delivery.md')
   })
 
   it('does not depend on legacy, UI, Authentication, Identity or Authorization packages', () => {
