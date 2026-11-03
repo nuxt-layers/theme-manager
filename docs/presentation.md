@@ -2,7 +2,7 @@
 
 > **In short:** consumers style by **meaning**, not by the colour a token shows today. This guide sets the grammar for choosing and pairing Theme Manager's colour and effect tokens, the order in which meaning, palette and accessibility are judged, and how the stylesheet is built.
 
-Consumers MUST use the public Tailwind vocabulary from `@nuxt4-layers/theme-manager/presentation.css`, never the private `--ui-*` or `--api-*` variables. [States](states.md) defines the full state vocabulary and the component procedures built on it.
+Consumers MUST use the public Tailwind vocabulary from `@nuxt-layers/theme-manager/presentation.css`, never the private `--ui-*` or `--api-*` variables. [States](states.md) defines the full state vocabulary and the component procedures built on it.
 
 ## The grammar
 
