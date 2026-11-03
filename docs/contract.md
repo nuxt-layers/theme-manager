@@ -8,10 +8,10 @@ Theme Manager is a foundation capability. Consumers MUST NOT depend on undocumen
 
 | Entry point | Is |
 | --- | --- |
-| `@nuxt4-layers/theme-manager` | The Nuxt Layer, composed with Nuxt `extends` |
-| `@nuxt4-layers/theme-manager/contracts` | The TypeScript contract: types, parsers, serialisers and runtime helpers |
-| `@nuxt4-layers/theme-manager/capability` | Machine-readable capability metadata (`capability.json`) |
-| `@nuxt4-layers/theme-manager/presentation.css` | The semantic presentation stylesheet |
+| `@nuxt-layers/theme-manager` | The Nuxt Layer, composed with Nuxt `extends` |
+| `@nuxt-layers/theme-manager/contracts` | The TypeScript contract: types, parsers, serialisers and runtime helpers |
+| `@nuxt-layers/theme-manager/capability` | Machine-readable capability metadata (`capability.json`) |
+| `@nuxt-layers/theme-manager/presentation.css` | The semantic presentation stylesheet |
 
 The layer also adds an internal stylesheet that registers its own management pages for Tailwind source discovery. It is not a public export.
 

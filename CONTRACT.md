@@ -9,10 +9,10 @@ Theme Manager is the **only authority** for the effective theme and its token vo
 ## Install
 
 ```json
-"@nuxt4-layers/theme-manager": "github:nuxt-layers/theme-manager#master"
+"@nuxt-layers/theme-manager": "github:nuxt-layers/theme-manager#master"
 ```
 
-`extends: ['@nuxt4-layers/theme-manager']` in `nuxt.config.ts`; refresh the lockfile whenever accepted upstream `master` advances, then use `--frozen-lockfile` in CI. The package scope is still `@nuxt4-layers` in the current implementation; this is not the repository organisation name. Node.js 22 or later. The package is `private: true` (no npm release) and runs no install scripts, so it needs no `allowBuilds` entry. **Composition is currently blocked:** no supported, public, single-call host integration exists. The implemented `provideThemeRepository`, `provideThemeActorContext` and `provideThemeAuthorization` are internal server utilities, not package exports. Do not import, auto-import or depend on them from a consuming application. The documented ports below describe present implementation behaviour, not an approved host integration API. The bundled default theme still renders without those integrations; stored-theme management does not.
+`extends: ['@nuxt-layers/theme-manager']` in `nuxt.config.ts`; refresh the lockfile whenever accepted upstream `master` advances, then use `--frozen-lockfile` in CI. The package scope is `@nuxt-layers`, matching the active repository organisation. Node.js 22 or later. The package is `private: true` (no npm release) and runs no install scripts, so it needs no `allowBuilds` entry. **Composition is currently blocked:** no supported, public, single-call host integration exists. The implemented `provideThemeRepository`, `provideThemeActorContext` and `provideThemeAuthorization` are internal server utilities, not package exports. Do not import, auto-import or depend on them from a consuming application. The documented ports below describe present implementation behaviour, not an approved host integration API. The bundled default theme still renders without those integrations; stored-theme management does not.
 
 ## Capability logo
 
@@ -93,7 +93,7 @@ The current implementation has no message catalogue (wording is built in, en-GB)
 - States: required `default`, `hover`, `active`, `selected`, `visited`, `disabled`; also `focus`, `pressed`, `on`, `error`, `loading`, `shadow`.
 - Fill, Pen and Edge of one surface share a role and state; a cross-role pairing is deliberate, never a fix for contrast. Mode is resolved by Theme Manager and never named in a class.
 
-**`presentation.css`**: `@nuxt4-layers/theme-manager/presentation.css` is the public stylesheet (default theme, semantic API, Tailwind vocabulary), with light values on `:root` and dark on `html.dark`. The layer already adds it to Nuxt's `css`, together with its own pages as Tailwind sources. A host that builds its own Tailwind entry can import `presentation.css` there before other layers' stylesheets, once; it never imports `assets/css/layer.css`, `theme-default.css`, `theme-api.css` or any other path.
+**`presentation.css`**: `@nuxt-layers/theme-manager/presentation.css` is the public stylesheet (default theme, semantic API, Tailwind vocabulary), with light values on `:root` and dark on `html.dark`. The layer already adds it to Nuxt's `css`, together with its own pages as Tailwind sources. A host that builds its own Tailwind entry can import `presentation.css` there before other layers' stylesheets, once; it never imports `assets/css/layer.css`, `theme-default.css`, `theme-api.css` or any other path.
 
 **Contrast (WCAG 2.2 AA, light and dark)**: Pen on its own Fill at least 4.5:1 (3:1 for large text), meaningful Edges 3:1, the focus ring 3:1 against every page layer, in every state but `disabled`. The default theme is held to this by Theme Manager's tests, and the editor shows a badge for every pairing in both modes. The current implementation does **not** refuse to save a theme that fails a pairing: the host reviews themes before publishing or sharing them.
 

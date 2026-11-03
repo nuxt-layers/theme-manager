@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1",
-  "name": "@nuxt4-layers/theme-manager",
+  "name": "@nuxt-layers/theme-manager",
   "version": "0.2.2",
   "classification": "foundation",
   "provides": [

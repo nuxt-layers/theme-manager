@@ -8,7 +8,7 @@ In a local Nuxt consumer, add:
 
 ```ts
 export default defineNuxtConfig({
-  extends: ['@nuxt4-layers/theme-manager'],
+  extends: ['@nuxt-layers/theme-manager'],
   runtimeConfig: {
     themeManager: { mode: 'test' },
   },
