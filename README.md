@@ -23,7 +23,7 @@ It does **not** own reusable application components, authentication, authorisati
 
 ## Using it
 
-The package is `@nuxt4-layers/theme-manager`. During active development, a host follows the latest accepted `master`, composes the package with Nuxt `extends` and supplies what the [host contract](CONTRACT.md) asks; that page is all a host needs. The four declared package entry points and current integration blockers are recorded in the root [host contract](CONTRACT.md). Every other package path is private.
+The package is `@nuxt-layers/theme-manager`. During active development, a host follows the latest accepted `master`, composes the package with Nuxt `extends` and supplies what the [host contract](CONTRACT.md) asks; that page is all a host needs. The four declared package entry points and current integration blockers are recorded in the root [host contract](CONTRACT.md). Every other package path is private.
 
 Installing the layer runs no install scripts, so a host needs no `allowBuilds` entry for it.
 
