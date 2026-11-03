@@ -24,7 +24,7 @@ Import the types from the contract entry point:
 import type {
   JsonValue,
   ThemeRepository
-} from '@nuxt4-layers/theme-manager/contracts'
+} from '@nuxt-layers/theme-manager/contracts'
 ```
 
 The contract is deliberately small:
@@ -48,7 +48,7 @@ Any storage technology can sit behind the port:
 import type {
   JsonValue,
   ThemeRepository
-} from '@nuxt4-layers/theme-manager/contracts'
+} from '@nuxt-layers/theme-manager/contracts'
 
 export function createThemeRepository(store: {
   get(id: string): Promise<JsonValue | null>
