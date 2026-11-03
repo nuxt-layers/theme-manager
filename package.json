@@ -18,7 +18,8 @@
     "capability.json",
     "nuxt.config.ts",
     "README.md",
-    "assets"
+    "assets",
+    "public"
   ],
   "scripts": {
     "dev:prepare": "nuxt prepare",
