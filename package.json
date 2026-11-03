@@ -3,7 +3,7 @@
   "version": "0.2.2",
   "private": true,
   "type": "module",
-  "description": "Nuxt 4 foundation capability for semantic presentation theme definition, resolution and management.",
+  "description": "Nuxt foundation capability for semantic presentation theme definition, resolution and management.",
   "exports": {
     ".": "./nuxt.config.ts",
     "./contracts": "./contracts/index.ts",
